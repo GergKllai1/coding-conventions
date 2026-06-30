@@ -10,6 +10,10 @@ It's language- and framework-agnostic: Kotlin, React, Terraform, Python, anythin
 - **Captures patterns, not one-off edits.** When you correct a choice — *or when Claude adopts an
   existing pattern in your code as a template for new work* — it notes the convention worth keeping.
   Nothing is saved behind your back.
+- **Follows the *latest* version of a pattern.** When Claude adopts an existing pattern as a
+  template, it steers to the most-evolved instance in your code (`LatestXyzRepoFilter`, not an
+  early `XyzRepoFilter`) before copying it — so new code is born in the current shape, and the
+  exemplar it records is the good one.
 - **Batched review, never nagging.** Candidates are collected quietly and presented once at a
   natural checkpoint as a single list (with clickable links to the real code), so you approve them
   all, pick a subset, or skip — not one interrupting prompt per pattern.
@@ -66,10 +70,20 @@ Pin it in a project's `.claude/settings.json` so everyone on the repo gets it:
 
 ## Commands
 
+All commands are **manual and opt-in** — nothing scans or commits on its own.
+
 - **`/seed`** — one deliberate harvest pass over the current repo: Claude scans for the dominant
   conventions and proposes them in a single batched review (deduped against anything already
   captured). Useful to bootstrap a catalog up front instead of letting it accrete during real work.
   Run it once per repo; ongoing capture handles the rest.
+- **`/refresh`** — maintain the catalog *itself*: re-anchor exemplars that have moved, repoint ones
+  that were renamed or deleted, merge duplicates, drop dead entries. Reviews the conventions, never
+  your code. Cheap; commits the whole tidy-up as one change.
+- **`/check`** — enforce the catalog on your *code*: find violations (whoever wrote them), propose
+  fixes, and apply them across similar files. **Diff-scoped by default** (only what changed); pass
+  `--all` for a full-repo sweep. Runs `/refresh` first so it never enforces stale rules, leans on
+  your existing linter for mechanical rules, remembers what you skip, and commits **one change per
+  convention** — each one approval-gated.
 
 ## Where your conventions live
 

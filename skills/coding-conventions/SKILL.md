@@ -21,8 +21,10 @@ Each entry is terse: **rule** (one line) · **why** (one line) · **example →*
 
 The path is the **live pointer** (always resolves to the current shape at HEAD). The SHA is an **anchor, not a pin**: it records *when* the entry was last verified, so you can detect drift cheaply and recover a renamed/deleted exemplar — it does not freeze the entry to that version.
 
+**Choosing the exemplar — point at the latest, most-evolved instance.** A pattern often appears in several places at different maturity (an early `RepoFilter` and the refined one it grew into). Point at the *current best* expression — the shape you'd want copied — not an early iteration the code has since outgrown. When candidates exist, use git recency as a signal (`git log --oneline -- <path>` / compare which was touched most recently) and prefer the richest, most complete version. A convention is only as good as the exemplar it points to.
+
 ## Capturing a convention (proactive, batched at checkpoints)
-This is **workflow-independent**: any time code is written, edited, reviewed, or rewritten — whether you wrote it, a subagent did, or the user is reshaping generated code — **and also the moment you scan for and adopt an existing pattern as a template** for new code (e.g. modeling a new service on an existing one) — watch for a reusable pattern worth keeping. Deliberately imitating an existing exemplar is itself capture-worthy: a pointer to it saves the next session from re-scanning.
+This is **workflow-independent**: any time code is written, edited, reviewed, or rewritten — whether you wrote it, a subagent did, or the user is reshaping generated code — **and also the moment you scan for and adopt an existing pattern as a template** for new code (e.g. modeling a new service on an existing one) — watch for a reusable pattern worth keeping. Deliberately imitating an existing exemplar is itself capture-worthy: a pointer to it saves the next session from re-scanning. **Before you copy what you found, confirm it's the latest, most-evolved instance** — if the codebase has since grown a newer iteration (`XyzRepoFilter` → `LatestXyzRepoFilter`), learn from and imitate *that* one, so the new code is born in the current shape rather than an outdated one — and record that newer instance as the exemplar.
 
 **Batch, never drip.** Collect candidates silently as you work — do **not** interrupt mid-edit with one prompt per pattern. Present them **once, together, at the next natural checkpoint** (a commit-approval gate, the end of an edit, finishing a review).
 
@@ -60,3 +62,9 @@ A fresh repo starts with an empty catalog, so ask **once** up front — *"no con
 
 ## Delivering conventions to delegated work
 Generated code only follows these if they're in context when the code is written. When delegating code generation to another agent or subagent (any orchestration flow), either name the relevant `conventions/*.md` for it to read or inject the applicable entries into its prompt/brief — otherwise the catalog only helps when you write code directly.
+
+## Commands (deliberate, opt-in)
+Capture is the passive, everyday path. Three explicit commands cover the heavier, on-demand operations — all manual, none ever run automatically:
+- **`/seed`** — populate a fresh catalog with a one-time harvest pass over the repo.
+- **`/refresh`** — maintain the catalog itself: re-anchor drifted exemplars, repoint rotted ones, merge dups, drop dead entries. Reviews the *conventions*, not your code.
+- **`/check`** — enforce the catalog on your *code*: find violations, propose fixes, apply across similar files. Diff-scoped by default (`--all` for a full sweep); runs `/refresh` first. Remembers skipped violations in `.check-skips.md` (re-surfaced only if the file changed since). Commits one-per-convention.

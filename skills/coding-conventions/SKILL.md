@@ -21,21 +21,30 @@ Each entry is terse: **rule** (one line) · **why** (one line) · **example →*
 
 The path is the **live pointer** (always resolves to the current shape at HEAD). The SHA is an **anchor, not a pin**: it records *when* the entry was last verified, so you can detect drift cheaply and recover a renamed/deleted exemplar — it does not freeze the entry to that version.
 
-## Capturing a convention (proactive, at checkpoints)
-This is **workflow-independent**: any time code is written, edited, reviewed, or rewritten — whether you wrote it, a subagent did, or the user is reshaping generated code — watch for a reusable pattern worth keeping. When you spot one, propose recording it at the next natural checkpoint (a commit-approval gate, the end of an edit, finishing a review) — not mid-edit:
-1. Present it as a **numbered, selectable prompt** — in Claude Code use the `AskUserQuestion` tool so the user can approve with one keystroke (outside Claude Code, list the options as plain numbered text). Show the **proposed entry text** and **proposed scope** (+ one line on why global vs project), with options:
-   1. **Record as-is** — save the entry to the proposed scope's catalog.
-   2. **Reshape it** — the user describes changes; revise and re-ask.
-   3. **Change scope** — flip global↔project, then record.
-   4. **Skip** — don't record this one.
-   The custom / "Other" reply lets the user type any tweak directly.
-2. On *Reshape* or *Change scope*, revise and re-present (same selectable prompt) until the user picks *Record* — or *Skip*.
-3. On *Record*, write the entry to the right location:
-   - global → `$CLAUDE_PLUGIN_DATA/conventions/<language>[-<framework>].md`
-   - project → `$CLAUDE_PROJECT_DIR/.claude/skills/coding-conventions/conventions/<area>.md`
-   Create the file if new. Record the **anchor** — the current `git rev-parse --short HEAD` — next to the exemplar pointer.
+## Capturing a convention (proactive, batched at checkpoints)
+This is **workflow-independent**: any time code is written, edited, reviewed, or rewritten — whether you wrote it, a subagent did, or the user is reshaping generated code — **and also the moment you scan for and adopt an existing pattern as a template** for new code (e.g. modeling a new service on an existing one) — watch for a reusable pattern worth keeping. Deliberately imitating an existing exemplar is itself capture-worthy: a pointer to it saves the next session from re-scanning.
 
-**Bar for entry — capture patterns, not instances.** Record a reusable *rule / structure / approach* that will recur (how tests are organized, how modules are wired, how errors are modeled, a preferred construct for a recurring situation). Do **not** record a one-off local edit. Example: changing one field from a string to an enum is an *instance* → skip it; *"prefer a code enum over a string for an evolving set"* is the *pattern* → capture it. A lone edit earns an entry only when it expresses a general rule. Also skip anything already captured, obvious from the codebase, or enforced by lint.
+**Batch, never drip.** Collect candidates silently as you work — do **not** interrupt mid-edit with one prompt per pattern. Present them **once, together, at the next natural checkpoint** (a commit-approval gate, the end of an edit, finishing a review).
+
+**Dedup before you present.** Load the existing entries for the target file(s) — they're terse and scoped, so this is cheap — and classify each candidate:
+- **New** → include it.
+- **Refines / overlaps an existing entry** → present it as an *update/merge* to that entry, not a second near-duplicate.
+- **Conflicts** with an existing entry (contradicts it) → flag the conflict explicitly and let the user resolve it (replace the old · keep both *only* if they're genuinely different scopes · skip). Never silently store both.
+
+<!-- ponytail: dedup is the model reading the scoped file and judging overlap — no embedding index. Fine for terse, area-scoped files; if one grows huge, split it by concern, don't add a dedup engine. -->
+
+Then present the survivors as a **single batched review**:
+1. List them as a numbered markdown list — each line: the **proposed entry** (rule · why · a clickable `path:line` to inspect the exemplar) and its **proposed scope** (+ a few words on why global vs project). Label merges and conflicts as such.
+2. Ask **one** decision prompt — in Claude Code use `AskUserQuestion` (outside it, plain numbered text): **1) Save all · 2) Pick a subset · 3) Skip all**. *Pick a subset* = the user replies with the numbers to drop or reshape; the custom / "Other" reply lets them tweak any entry inline.
+3. On reshape / scope-flip, revise just those entries and re-present; loop until the user saves or skips.
+
+On save, write each kept entry to the right location:
+- global → `$CLAUDE_PLUGIN_DATA/conventions/<language>[-<framework>].md`
+- project → `$CLAUDE_PROJECT_DIR/.claude/skills/coding-conventions/conventions/<area>.md`
+
+Create the file if new. Record the **anchor** — the current `git rev-parse --short HEAD` — next to each exemplar pointer. (Store the canonical `path/File.ext#symbol @sha`; the clickable `path:line` is only for the review list.)
+
+**Bar for entry — capture patterns, not instances.** Record a reusable *rule / structure / approach* that will recur (how tests are organized, how modules are wired, how errors are modeled, a preferred construct for a recurring situation). Do **not** record a one-off local edit. Example: changing one field from a string to an enum is an *instance* → skip it; *"prefer a code enum over a string for an evolving set"* is the *pattern* → capture it. A lone edit earns an entry only when it expresses a general rule. Skip anything already captured or enforced by lint. **Being visible in the codebase is *not* a reason to skip** — recording *where* a canonical exemplar lives (a pointer) is not duplicating *what* it says, and is exactly the value (no re-scan next time). Only skip a pattern that's genuinely trivial or self-evident at a glance.
 
 ## Keeping it current (no scanning)
 - **Point, don't snapshot** — the path pointer tracks HEAD, so a pattern reshaping needs no edit. The anchor SHA is the last-confirmed commit, not a freeze.
@@ -45,6 +54,8 @@ This is **workflow-independent**: any time code is written, edited, reviewed, or
 
 ## Bootstrapping a project's catalog
 When starting substantive code work (or on `/init`) in a project that has no `$CLAUDE_PROJECT_DIR/.claude/skills/coding-conventions/SKILL.md`, offer to scaffold one: write a project `SKILL.md` carrying these same mechanics (scope test, entry format, capture loop, staleness rules) scoped to that repo, with an empty `conventions/` dir. Keep it **self-contained** — teammates may not have this plugin installed. Conventions captured there become that project's memory and are checked into the repo.
+
+A fresh repo starts with an empty catalog, so ask **once** up front — *"no conventions catalog here yet — capture patterns as we go?"* (yes/no). On yes, proceed with the **identical batched flow** as every other session; the only difference is the first few batches run larger. Do **not** do a special up-front harvest sweep — entries earned through real work beat ones guessed by a scan. (A deliberate harvest pass may arrive later as an explicit `/seed` command; it is a non-goal for now.)
 
 ## Delivering conventions to delegated work
 Generated code only follows these if they're in context when the code is written. When delegating code generation to another agent or subagent (any orchestration flow), either name the relevant `conventions/*.md` for it to read or inject the applicable entries into its prompt/brief — otherwise the catalog only helps when you write code directly.

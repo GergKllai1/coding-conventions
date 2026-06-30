@@ -7,9 +7,12 @@ It's language- and framework-agnostic: Kotlin, React, Terraform, Python, anythin
 
 ## What it does
 
-- **Captures patterns, not one-off edits.** When you correct a style, structure, or test choice
-  worth keeping, it offers to record it at a natural checkpoint. You approve, re-scope, or reshape
-  it — nothing is saved behind your back.
+- **Captures patterns, not one-off edits.** When you correct a choice — *or when Claude adopts an
+  existing pattern in your code as a template for new work* — it notes the convention worth keeping.
+  Nothing is saved behind your back.
+- **Batched review, never nagging.** Candidates are collected quietly and presented once at a
+  natural checkpoint as a single list (with clickable links to the real code), so you approve them
+  all, pick a subset, or skip — not one interrupting prompt per pattern.
 - **Two scopes.** *Global* (your personal cross-project style) and *project* (how a specific
   codebase does things). It suggests which; you decide.
 - **Bootstraps each repo.** Start work in a project with no catalog and it offers to scaffold a
@@ -28,6 +31,9 @@ The primitives here aren't unprecedented — what's different is the **disciplin
   your codebase — anchored with the commit where it was last confirmed — instead of duplicating
   code. That anchor powers a cheap drift check (`git diff` against HEAD), so Claude trusts an
   unchanged exemplar without re-reading it and re-verifies only when it actually moved.
+- **No duplicate sprawl.** New candidates are checked against what's already captured — overlaps
+  are merged into the existing entry and contradictions are surfaced for you to resolve, so the
+  catalog doesn't fill up with near-identical rules.
 - **Scoped and shareable.** Project conventions live in the repo and travel with it, so a whole
   team shares one source of truth — not one person's private memory file.
 
@@ -57,6 +63,13 @@ Pin it in a project's `.claude/settings.json` so everyone on the repo gets it:
   "enabledPlugins": { "coding-conventions@gergo-claude-plugins": true }
 }
 ```
+
+## Commands
+
+- **`/seed`** — one deliberate harvest pass over the current repo: Claude scans for the dominant
+  conventions and proposes them in a single batched review (deduped against anything already
+  captured). Useful to bootstrap a catalog up front instead of letting it accrete during real work.
+  Run it once per repo; ongoing capture handles the rest.
 
 ## Where your conventions live
 

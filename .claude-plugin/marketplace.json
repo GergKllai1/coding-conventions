@@ -1,0 +1,12 @@
+{
+  "name": "gergo-claude-plugins",
+  "owner": { "name": "Gergo Kallai", "email": "gergo@viametrics.com" },
+  "description": "Coding standards and conventions plugins.",
+  "plugins": [
+    {
+      "name": "coding-conventions",
+      "source": "./",
+      "description": "On-demand coding-conventions catalog + project bootstrap."
+    }
+  ]
+}

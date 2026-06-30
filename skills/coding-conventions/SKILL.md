@@ -14,7 +14,9 @@ A living, per-scope catalog of how code should be written, plus the mechanics fo
 Discover what exists by listing the `conventions/` directory in the personal and project locations; read only the file matching what you're working on. (Resolve the `$CLAUDE_*` variables from the environment, e.g. `echo "$CLAUDE_PLUGIN_DATA"`.)
 
 ## Scope: global vs project
-A convention is **global** if the sentence still makes sense in a different repo (only language/framework primitives). It's **project** if it names repo-specific types, modules, helpers, or architecture. Test: *"would this make sense in another project?"* Yes → global; mentions repo-specific names → project. One preference can have a global *principle* and a project *instantiation* — split them.
+A convention is **global** if the sentence still makes sense in a different repo (only language/framework primitives). It's **project** if it names repo-specific types, modules, helpers, or architecture. Test: *"would this make sense in another project?"* Yes → global; mentions repo-specific names → project.
+
+**One rule can legitimately be *both* — and that's not a duplicate.** A general principle (e.g. *"prefer one parameterized `runTest(input, expected)` helper over per-case blocks"*) belongs in **global** as the portable, **pointer-free** principle; the *same* rule made concrete with a real exemplar (`FooServiceTest.kt#runTest @sha`) belongs in the **project** catalog as the enforceable **instantiation**. They are *linked* (principle ↔ instantiation), not redundant — dedup must never try to merge or flag them against each other. Note that a global entry is naturally pointer-free anyway: a `path#symbol` only resolves in the repo it lives in, so the drift-checkable pointer lives only in the project instantiation.
 
 ## Entry format (point, don't paste)
 Each entry is terse: **rule** (one line) · **why** (one line) · **example →** a live pointer to the canonical exemplar `path/to/File.ext#symbol`, optionally **anchored** with the short commit SHA where it was last confirmed: `path/to/File.ext#symbol @a1b2c3d`. Never paste large code blocks — the repo is the source of truth.
@@ -38,10 +40,15 @@ This is **workflow-independent**: any time code is written, edited, reviewed, or
 
 Then present the survivors as a **single batched review**:
 1. List them as a numbered markdown list — each line: the **proposed entry** (rule · why · a clickable `path:line` to inspect the exemplar) and its **proposed scope** (+ a few words on why global vs project). Label merges and conflicts as such.
-2. Ask **one** decision prompt — in Claude Code use `AskUserQuestion` (outside it, plain numbered text): **1) Save all · 2) Pick a subset · 3) Skip all**. *Pick a subset* = the user replies with the numbers to drop or reshape; the custom / "Other" reply lets them tweak any entry inline.
-3. On reshape / scope-flip, revise just those entries and re-present; loop until the user saves or skips.
+2. **Fold the "both" case into one item — don't ask twice.** When a candidate's principle is generalizable (passes the global test) *and* you have a concrete exemplar for it, present it as a single item proposing **both** a global principle (pointer-free) and a project instantiation (with the exemplar), defaulting to recording both. Show it like:
+   > *Looks like a general rule. Proposed:*
+   > • *project (`<area>`): `runTest` helper → `FooServiceTest.kt#runTest @sha`  (enforceable)*
+   > • *global (`<language>`): same principle, portable, pointer-free*
+   > *— Save both · Project only · Global only · Reshape · Skip*
+3. Ask **one** decision prompt for the batch — in Claude Code use `AskUserQuestion` (outside it, plain numbered text): **1) Save all · 2) Pick a subset · 3) Skip all**. *Pick a subset* = the user replies with the numbers to drop, reshape, or narrow a both-item to project-only / global-only; the custom / "Other" reply lets them tweak any entry inline.
+4. On reshape / scope-flip, revise just those entries and re-present; loop until the user saves or skips.
 
-On save, write each kept entry to the right location:
+On save, write each kept entry to the right location (a both-item writes to **both**, linked — global principle pointer-free, project instantiation with the exemplar):
 - global → `$CLAUDE_PLUGIN_DATA/conventions/<language>[-<framework>].md`
 - project → `$CLAUDE_PROJECT_DIR/.claude/skills/coding-conventions/conventions/<area>.md`
 

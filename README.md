@@ -17,8 +17,11 @@ It's language- and framework-agnostic: Kotlin, React, Terraform, Python, anythin
 - **Batched review, never nagging.** Candidates are collected quietly and presented once at a
   natural checkpoint as a single list (with clickable links to the real code), so you approve them
   all, pick a subset, or skip — not one interrupting prompt per pattern.
-- **Two scopes.** *Global* (your personal cross-project style) and *project* (how a specific
-  codebase does things). It suggests which; you decide.
+- **Two scopes, and a rule can be both.** *Global* (your personal cross-project style) and
+  *project* (how a specific codebase does things). It suggests which; you decide. When a rule is
+  general but you captured it with a concrete example (say a Kotest `runTest` style), it offers to
+  record **both in one step** — the portable principle globally and the concrete, enforceable
+  instantiation in the project — no double prompt, and the two aren't treated as duplicates.
 - **Bootstraps each repo.** Start work in a project with no catalog and it offers to scaffold a
   project-local one, checked into the repo so your teammates get it too.
 - **Stays lean.** Entries are terse — rule · why · a pointer to a real example in your code — never

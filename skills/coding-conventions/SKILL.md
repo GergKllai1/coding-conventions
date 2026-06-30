@@ -26,8 +26,9 @@ This is **workflow-independent**: any time code is written, edited, reviewed, or
 
 **Batch, never drip.** Collect candidates silently as you work — do **not** interrupt mid-edit with one prompt per pattern. Present them **once, together, at the next natural checkpoint** (a commit-approval gate, the end of an edit, finishing a review).
 
-**Dedup before you present.** Load the existing entries for the target file(s) — they're terse and scoped, so this is cheap — and classify each candidate:
+**Dedup before you present.** Load the existing entries for the target file(s) — they're terse and scoped, so this is cheap — **and also scan the repo's prose convention docs (`CLAUDE.md`, `AGENTS.md`, a `CONTRIBUTING`/style guide) for rules already stated there**. Then classify each candidate:
 - **New** → include it.
+- **Already stated in prose** (e.g. described in `CLAUDE.md`) → don't propose it as new; at most offer to add a pointer+anchor entry that upgrades the prose rule to a tracked exemplar, and only if that adds value.
 - **Refines / overlaps an existing entry** → present it as an *update/merge* to that entry, not a second near-duplicate.
 - **Conflicts** with an existing entry (contradicts it) → flag the conflict explicitly and let the user resolve it (replace the old · keep both *only* if they're genuinely different scopes · skip). Never silently store both.
 

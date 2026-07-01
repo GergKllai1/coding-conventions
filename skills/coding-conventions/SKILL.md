@@ -16,6 +16,8 @@ Discover what exists by listing the `conventions/` directory in the personal and
 ## Scope: global vs project
 A convention is **global** if the sentence still makes sense in a different repo (only language/framework primitives). It's **project** if it names repo-specific types, modules, helpers, or architecture. Test: *"would this make sense in another project?"* Yes → global; mentions repo-specific names → project.
 
+**Precedence when applying:** when a project convention and a global one both bear on the code you're writing, the **project convention wins** — global only fills the gaps the project is silent on. A repo's own catalog is always authoritative for that repo.
+
 **One rule can legitimately be *both* — and that's not a duplicate.** A general principle (e.g. *"prefer one parameterized `runTest(input, expected)` helper over per-case blocks"*) belongs in **global** as the portable, **pointer-free** principle; the *same* rule made concrete with a real exemplar (`FooServiceTest.kt#runTest @sha`) belongs in the **project** catalog as the enforceable **instantiation**. They are *linked* (principle ↔ instantiation), not redundant — dedup must never try to merge or flag them against each other. Note that a global entry is naturally pointer-free anyway: a `path#symbol` only resolves in the repo it lives in, so the drift-checkable pointer lives only in the project instantiation.
 
 ## Entry format (point, don't paste)

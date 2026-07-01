@@ -4,8 +4,8 @@
   "version": "0.5.1",
   "description": "On-demand, per-scope catalog of coding conventions; captures reusable patterns at checkpoints and scaffolds a project-local catalog in any repo.",
   "author": { "name": "Gergo Kallai", "email": "gergo@viametrics.com" },
-  "homepage": "https://github.com/gergkllai1/coding-conventions-plugin",
-  "repository": "https://github.com/gergkllai1/coding-conventions-plugin",
+  "homepage": "https://github.com/gergkllai1/coding-conventions",
+  "repository": "https://github.com/gergkllai1/coding-conventions",
   "license": "MIT",
   "keywords": ["conventions", "coding-standards", "patterns", "style"]
 }

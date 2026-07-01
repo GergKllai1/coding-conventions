@@ -50,7 +50,7 @@ rolling it yourself. If you just need ad-hoc personal memory, native memory may 
 ## Install
 
 ```
-/plugin marketplace add gergkllai1/coding-conventions-plugin
+/plugin marketplace add gergkllai1/coding-conventions
 /plugin install coding-conventions@gergo-claude-plugins
 ```
 
@@ -64,7 +64,7 @@ Pin it in a project's `.claude/settings.json` so everyone on the repo gets it:
 {
   "extraKnownMarketplaces": {
     "gergo-claude-plugins": {
-      "source": { "source": "github", "repo": "gergkllai1/coding-conventions-plugin" }
+      "source": { "source": "github", "repo": "gergkllai1/coding-conventions" }
     }
   },
   "enabledPlugins": { "coding-conventions@gergo-claude-plugins": true }

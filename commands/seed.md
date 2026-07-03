@@ -11,6 +11,6 @@ Follow the **coding-conventions** skill's mechanics exactly — do not reinvent 
 3. **Apply the scope test** per candidate (global vs project); a seed of a specific repo is usually project-scoped, but split out any genuinely global principle.
 4. **Dedup before presenting** — load the existing catalog *and* scan the repo's prose convention docs (`CLAUDE.md`, `AGENTS.md`, a `CONTRIBUTING`/style guide), then classify each candidate New / Merge / Conflict / Already-stated-in-prose, exactly as the skill's capture flow does. Never propose a duplicate of something already captured or already written down in prose — for prose rules, at most offer a pointer+anchor upgrade.
 5. **Present as one batched review** — numbered list with clickable `path:line` per candidate, then a single `Save all · Pick a subset · Skip all` decision. Expect this batch to be larger than a normal checkpoint batch; that is the point of a deliberate seed.
-6. On save, write entries to the right locations and create the catalog files if missing (bootstrap a project `SKILL.md` first if the repo has none).
+6. On save, write entries to `$CLAUDE_PROJECT_DIR/.claude/conventions/<area>.md` (create the directory/files if missing). Do **not** write a project `SKILL.md` — the plugin supplies the mechanics; only the `conventions/*.md` data belongs in the repo.
 
 After this pass, ongoing capture takes over normally — `/seed` is meant to be run once per repo (or occasionally when entering a large untracked area), not routinely.

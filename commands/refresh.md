@@ -4,7 +4,7 @@ description: Maintain the coding-conventions catalog itself — refresh drifted 
 
 Maintain the **convention catalog itself** — this reviews the *entries*, not your code. Use the **coding-conventions** skill's mechanics; do not reinvent them.
 
-Work through the personal and project catalogs (`$CLAUDE_PLUGIN_DATA/conventions/` and `$CLAUDE_PROJECT_DIR/.claude/skills/coding-conventions/conventions/`). For each entry:
+Work through the personal and project catalogs (`$CLAUDE_PLUGIN_DATA/conventions/` and `$CLAUDE_PROJECT_DIR/.claude/conventions/`). For each entry:
 
 1. **Drift check (objective)** — `git diff --quiet <anchor-sha> HEAD -- <exemplar-path>`.
    - Clean → entry is current, leave it.

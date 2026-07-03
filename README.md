@@ -22,8 +22,9 @@ It's language- and framework-agnostic: Kotlin, React, Terraform, Python, anythin
   general but you captured it with a concrete example (say a Kotest `runTest` style), it offers to
   record **both in one step** — the portable principle globally and the concrete, enforceable
   instantiation in the project — no double prompt, and the two aren't treated as duplicates.
-- **Bootstraps each repo.** Start work in a project with no catalog and it offers to scaffold a
-  project-local one, checked into the repo so your teammates get it too.
+- **Bootstraps each repo.** Start work in a project with no catalog and it starts one under
+  `.claude/conventions/`, checked into the repo so your teammates get it too. Only the convention
+  data lives in the repo — the mechanics come from the plugin, so nothing to drift or maintain.
 - **Stays lean.** Entries are terse — rule · why · a pointer to a real example in your code — never
   pasted snippets. They load on demand, so they don't bloat every conversation.
 
@@ -93,7 +94,7 @@ All commands are **manual and opt-in** — nothing scans or commits on its own.
 | Scope | Location |
 |-------|----------|
 | Personal / cross-project | `$CLAUDE_PLUGIN_DATA/conventions/` (persists across plugin updates) |
-| Project (team-shared) | `$CLAUDE_PROJECT_DIR/.claude/skills/coding-conventions/conventions/` (checked into the repo) |
+| Project (team-shared) | `$CLAUDE_PROJECT_DIR/.claude/conventions/` (checked into the repo) |
 
 ## License
 

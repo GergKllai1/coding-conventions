@@ -3,7 +3,7 @@
 This file is a shipped, read-only **format example** — not real conventions. Your
 actual entries live in writable locations (see the skill overview): personal ones
 in `$CLAUDE_PLUGIN_DATA/conventions/`, project ones in
-`$CLAUDE_PROJECT_DIR/.claude/skills/coding-conventions/conventions/`.
+`$CLAUDE_PROJECT_DIR/.claude/conventions/`.
 
 Name real files by language/framework/concern, e.g. `kotlin-kotest.md`, `react.md`,
 `terraform.md`, `python.md`. Each entry follows this shape:

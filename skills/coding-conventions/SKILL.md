@@ -8,7 +8,7 @@ description: Use when writing or reviewing code, when the user corrects or steer
 A living, per-scope catalog of how code should be written, plus the mechanics for capturing and applying it. This skill ships the **engine** (read-only); the conventions themselves live in two writable places, so they survive plugin updates and stay per-project:
 
 - **Personal / cross-project** → `$CLAUDE_PLUGIN_DATA/conventions/<language>[-<framework>].md` — how you like to write code anywhere (persists across plugin updates).
-- **Project** → `$CLAUDE_PROJECT_DIR/.claude/skills/coding-conventions/conventions/<area>.md` — how THIS codebase does things (checked into that repo).
+- **Project** → `$CLAUDE_PROJECT_DIR/.claude/conventions/<area>.md` — how THIS codebase does things (checked into that repo). These are plain data files; the plugin supplies the mechanics, so **no project `SKILL.md` is written** — a checked-in copy of the mechanics would only drift from the plugin.
 - **Shipped examples** (read-only) → `$CLAUDE_PLUGIN_ROOT/skills/coding-conventions/conventions/` — format references only, not your content.
 
 Discover what exists by listing the `conventions/` directory in the personal and project locations; read only the file matching what you're working on. (Resolve the `$CLAUDE_*` variables from the environment, e.g. `echo "$CLAUDE_PLUGIN_DATA"`.)
@@ -52,7 +52,7 @@ Then present the survivors as a **single batched review**:
 
 On save, write each kept entry to the right location (a both-item writes to **both**, linked — global principle pointer-free, project instantiation with the exemplar):
 - global → `$CLAUDE_PLUGIN_DATA/conventions/<language>[-<framework>].md`
-- project → `$CLAUDE_PROJECT_DIR/.claude/skills/coding-conventions/conventions/<area>.md`
+- project → `$CLAUDE_PROJECT_DIR/.claude/conventions/<area>.md`
 
 Create the file if new. Record the **anchor** — the current `git rev-parse --short HEAD` — next to each exemplar pointer. (Store the canonical `path/File.ext#symbol @sha`; the clickable `path:line` is only for the review list.)
 
@@ -65,7 +65,7 @@ Create the file if new. Record the **anchor** — the current `git rev-parse --s
 - **Opportunistic update** — if already working in an area and the pattern has outgrown its entry, flag it at the next checkpoint. Never scan the whole repo for drift — the per-entry anchor diff is the only check, and only when you're about to use the entry.
 
 ## Bootstrapping a project's catalog
-When starting substantive code work (or on `/init`) in a project that has no `$CLAUDE_PROJECT_DIR/.claude/skills/coding-conventions/SKILL.md`, offer to scaffold one: write a project `SKILL.md` carrying these same mechanics (scope test, entry format, capture loop, staleness rules) scoped to that repo, with an empty `conventions/` dir. Keep it **self-contained** — teammates may not have this plugin installed. Conventions captured there become that project's memory and are checked into the repo.
+When starting substantive code work (or on `/init`) in a project that has no `$CLAUDE_PROJECT_DIR/.claude/conventions/`, just create that directory the first time an entry is saved — nothing else. **Do not write a project `SKILL.md` or copy the mechanics into the repo**: the plugin is the single source of the mechanics, and a checked-in copy would silently drift as the plugin evolves. The only thing that belongs in the repo is the `conventions/*.md` data — the repo-specific entries the plugin can't carry. Teammates get the mechanics by having the plugin installed (e.g. via the project's `.claude/settings.json` auto-enable block).
 
 A fresh repo starts with an empty catalog, so ask **once** up front — *"no conventions catalog here yet — capture patterns as we go?"* (yes/no). On yes, proceed with the **identical batched flow** as every other session; the only difference is the first few batches run larger. Do **not** do a special up-front harvest sweep by default — entries earned through real work beat ones guessed by a scan. (A user who *wants* a deliberate harvest can run the `/seed` command, which scans the repo once and feeds candidates through this same dedup + batched-review flow.)
 

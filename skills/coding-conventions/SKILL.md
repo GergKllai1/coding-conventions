@@ -1,6 +1,6 @@
 ---
 name: coding-conventions
-description: Use when writing or reviewing code, when the user corrects or steers a code style/structure/test choice worth remembering, or when starting code work in a project that has no project-level coding-conventions catalog.
+description: Use when writing or reviewing code, when planning or designing a code change (so the plan conforms from the start), when the user corrects or steers a code style/structure/test choice worth remembering, or when starting code work in a project that has no project-level coding-conventions catalog.
 ---
 
 # Coding Conventions
@@ -12,6 +12,8 @@ A living, per-scope catalog of how code should be written, plus the mechanics fo
 - **Shipped examples** (read-only) → `$CLAUDE_PLUGIN_ROOT/skills/coding-conventions/conventions/` — format references only, not your content.
 
 Discover what exists by listing the `conventions/` directory in the personal and project locations; read only the file matching what you're working on. (Resolve the `$CLAUDE_*` variables from the environment, e.g. `echo "$CLAUDE_PLUGIN_DATA"`.)
+
+**Apply at plan time, not just when typing code.** The most common miss is a *plan* or *design* that proposes code/tests which ignore a recorded convention — because the catalog was never read while planning. So: **before you propose code or tests in a plan or design, read the applicable `conventions/*.md` and make the plan conform** (e.g. propose tests in the project's `runTest` shape, not a generic one). Planning is upstream of writing code; the conventions must be in context *there*, or the plan is born non-conforming and someone has to catch it later.
 
 ## Scope: global vs project
 A convention is **global** if the sentence still makes sense in a different repo (only language/framework primitives). It's **project** if it names repo-specific types, modules, helpers, or architecture. Test: *"would this make sense in another project?"* Yes → global; mentions repo-specific names → project.
@@ -67,10 +69,20 @@ Create the file if new. Record the **anchor** — the current `git rev-parse --s
 ## Bootstrapping a project's catalog
 When starting substantive code work (or on `/init`) in a project that has no `$CLAUDE_PROJECT_DIR/.claude/conventions/`, just create that directory the first time an entry is saved — nothing else. **Do not write a project `SKILL.md` or copy the mechanics into the repo**: the plugin is the single source of the mechanics, and a checked-in copy would silently drift as the plugin evolves. The only thing that belongs in the repo is the `conventions/*.md` data — the repo-specific entries the plugin can't carry. Teammates get the mechanics by having the plugin installed (e.g. via the project's `.claude/settings.json` auto-enable block).
 
+**Also drop a pointer in `CLAUDE.md`** so conventions are *always in context* — including during planning and inside dispatched subagents (which inherit project instructions but don't auto-load skills). When first creating a project catalog, ensure the repo's `CLAUDE.md` contains this idempotent managed block (insert if absent, update in place if the markers are already there; create a minimal `CLAUDE.md` if the repo has none):
+
+```
+<!-- coding-conventions:start -->
+Coding conventions for this repo live in `.claude/conventions/`. Before planning or writing code, read the relevant `<area>.md` and follow it; project conventions override personal/global.
+<!-- coding-conventions:end -->
+```
+
+This is a **pointer, not a mechanics copy** — it names *where* the conventions are, so it never drifts. It's what makes a plan consult the catalog instead of proposing non-conforming code.
+
 A fresh repo starts with an empty catalog, so ask **once** up front — *"no conventions catalog here yet — capture patterns as we go?"* (yes/no). On yes, proceed with the **identical batched flow** as every other session; the only difference is the first few batches run larger. Do **not** do a special up-front harvest sweep by default — entries earned through real work beat ones guessed by a scan. (A user who *wants* a deliberate harvest can run the `/seed` command, which scans the repo once and feeds candidates through this same dedup + batched-review flow.)
 
 ## Delivering conventions to delegated work
-Generated code only follows these if they're in context when the code is written. When delegating code generation to another agent or subagent (any orchestration flow), either name the relevant `conventions/*.md` for it to read or inject the applicable entries into its prompt/brief — otherwise the catalog only helps when you write code directly.
+Generated code only follows these if they're in context when the code is written. When delegating **code generation OR planning/design** to another agent or subagent (any orchestration flow — including a plan-writing subagent), either name the relevant `conventions/*.md` for it to read or inject the applicable entries into its prompt/brief — otherwise the catalog only helps when you write code directly. A subagent asked to draft a plan won't consult the catalog on its own; the `CLAUDE.md` pointer above helps (subagents inherit project instructions), but for anything convention-heavy, name the specific files in the brief.
 
 ## Commands (deliberate, opt-in)
 Capture is the passive, everyday path. Three explicit commands cover the heavier, on-demand operations — all manual, none ever run automatically:

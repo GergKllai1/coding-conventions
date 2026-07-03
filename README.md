@@ -25,6 +25,9 @@ It's language- and framework-agnostic: Kotlin, React, Terraform, Python, anythin
 - **Bootstraps each repo.** Start work in a project with no catalog and it starts one under
   `.claude/conventions/`, checked into the repo so your teammates get it too. Only the convention
   data lives in the repo — the mechanics come from the plugin, so nothing to drift or maintain.
+- **Applies at plan time, not just when typing.** It drops a one-line pointer in `CLAUDE.md`, so
+  conventions are in context while Claude *plans* a change (and inside planning subagents) — plans
+  propose code and tests in your recorded shapes instead of generic ones that get fixed up later.
 - **Stays lean.** Entries are terse — rule · why · a pointer to a real example in your code — never
   pasted snippets. They load on demand, so they don't bloat every conversation.
 

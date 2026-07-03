@@ -1,7 +1,7 @@
 {
   "name": "coding-conventions",
   "displayName": "Coding Conventions",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "On-demand, per-scope catalog of coding conventions; captures reusable patterns at checkpoints and scaffolds a project-local catalog in any repo.",
   "author": { "name": "Gergo Kallai", "email": "gergo@viametrics.com" },
   "homepage": "https://github.com/gergkllai1/coding-conventions",

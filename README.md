@@ -99,6 +99,15 @@ All commands are **manual and opt-in** — nothing scans or commits on its own.
 | Personal / cross-project | `$CLAUDE_PLUGIN_DATA/conventions/` (persists across plugin updates) |
 | Project (team-shared) | `$CLAUDE_PROJECT_DIR/.claude/conventions/` (checked into the repo) |
 
+## Other agents
+
+Built for [Claude Code](https://code.claude.com) — my preferred agent — but usable elsewhere. Your
+project conventions are just plain markdown in `.claude/conventions/*.md`, so any agent that reads an
+instructions file (Codex, Cursor, Copilot, Aider, Windsurf, … via `AGENTS.md`) can follow them —
+point its instructions file at that directory. What's Claude-specific is the *automation*: proactive
+capture, the batched review, and the `/seed` · `/refresh` · `/check` commands. Those don't run in
+other agents, but the catalog they produce is portable and readable anywhere.
+
 ## License
 
 [MIT](LICENSE)

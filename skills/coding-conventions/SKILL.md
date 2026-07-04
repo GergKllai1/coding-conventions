@@ -32,10 +32,10 @@ Each entry: **rule** (one line) · **why** (one line) · **example →** `path/F
 
 ## Capturing a convention
 Two sources, two tempos:
-- **User corrects/steers a choice, or says "remember this" — eager.** Highest signal: apply the change, then offer to record it **at the end of that turn** — never defer to a checkpoint that may not come.
+- **User corrects/steers a choice, or says "remember this" — eager.** Highest signal: apply the change, then at the **end of that turn** make a **simple one-item offer** — *record it? · reshape · skip* (not the multi-item review below). Never defer to a checkpoint that may not come.
 - **You notice a reusable pattern while writing/reviewing/adopting code — batched.** Collect silently; present **once, together, at the next checkpoint** (commit gate, end of edit/review) — don't drip one prompt per pattern. (When adopting an existing pattern as a template, imitate and record its *latest* instance.)
 
-**Dedup before presenting:** read the target `conventions/*.md` and prose docs (`CLAUDE.md`/`AGENTS.md`/style guide), then classify each candidate — **New** / **already in prose** (offer only a pointer+anchor upgrade) / **refines existing** (merge, don't duplicate) / **conflicts** (flag; user resolves; never store both).
+**Dedup first — either tempo (eager or batched):** before offering, read the target `conventions/*.md` and prose docs (`CLAUDE.md`/`AGENTS.md`/style guide), then classify each candidate — **already captured** (say so, offer nothing) / **New** / **already in prose** (offer only a pointer+anchor upgrade) / **refines existing** (merge, don't duplicate) / **conflicts** (flag; user resolves; never store both). An already-captured user correction gets acknowledged, not re-offered.
 <!-- ponytail: dedup is the model reading a scoped file, no index. Fine while files stay small; split by concern if one grows huge. -->
 
 **Present as one batched review:** a numbered list (each: rule · why · clickable `path:line` · proposed scope). Fold a "both" candidate into a single item (project instantiation + global principle, default save both). Then one decision — **Save all · Pick a subset · Skip all** — looping on reshape/scope-flip until saved or skipped. On save, write to the right location and record the anchor (`git rev-parse --short HEAD`) beside each pointer.
@@ -55,4 +55,4 @@ Coding conventions for this repo live in `.claude/conventions/`. Before planning
 ## Commands (deliberate, opt-in — never automatic)
 - **`/seed`** — one-time harvest to populate a fresh catalog.
 - **`/refresh`** — maintain the catalog: re-anchor, repoint, merge, drop. Reviews conventions, not code.
-- **`/check`** — enforce the catalog on code: find violations, propose fixes, apply across similar files. Diff-scoped (`--all` for full); runs `/refresh` first; remembers skips in `.check-skips.md`; commits one-per-convention.
+- **`/align`** — bring code into line with the catalog: find violations, propose fixes, apply across similar files (it *changes code*). Diff-scoped (`--all` for full); runs `/refresh` first; remembers skips in `.align-skips.md`; commits one-per-convention.

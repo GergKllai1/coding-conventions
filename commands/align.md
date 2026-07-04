@@ -1,11 +1,11 @@
 ---
-description: Enforce the coding-conventions catalog on your code — find violations, propose fixes, apply across similar files. Diff-scoped by default; pass --all for a full-repo sweep.
+description: Align your code to the coding-conventions catalog — find violations, propose fixes, apply across similar files. Diff-scoped by default; pass --all for a full-repo sweep.
 ---
 
-Enforce the **convention catalog on your code** — find code that violates recorded conventions (no matter who wrote it) and fix it. Use the **coding-conventions** skill's mechanics. **Manual only** — this is a deliberate, heavy operation; it never runs automatically.
+Align your **code to the convention catalog** — find code that violates recorded conventions (no matter who wrote it) and bring it into line. Use the **coding-conventions** skill's mechanics. **Manual only** — this is a deliberate, heavy operation that changes code; it never runs automatically.
 
 **Scope:**
-- Default: **diff-scoped** — check only what changed (`git diff --name-only` against HEAD, plus staged/unstaged). Cheap, bounded, catches newly introduced violations (including ones written without Claude).
+- Default: **diff-scoped** — scan only what changed (`git diff --name-only` against HEAD, plus staged/unstaged). Cheap, bounded, catches newly introduced violations (including ones written without Claude).
 - `--all`: full-repo sweep. Expensive; reserve for initial adoption or an occasional audit.
 
 **Run order:**
@@ -16,7 +16,7 @@ Enforce the **convention catalog on your code** — find code that violates reco
 **Finding & triage:**
 4. Scan the in-scope files for violations. Report up front: **how many files have violations, against which conventions**, and let the user choose which to walk through (a subset, or all).
 5. Walk each violation: show the offending `path:line`, the convention it breaks, and the **proposed fix**. Options per violation: **Approve · Shape (discuss/adjust) · Skip**.
-6. **Skip-memory:** on skip, record it in a skip ledger so the next run doesn't re-nag — `$CLAUDE_PROJECT_DIR/.claude/conventions/.check-skips.md`, one line per skip: `- <path> · <convention name> · <short-sha>`. On later runs, suppress a skipped violation **unless the file changed since that sha** (`git diff --quiet <sha> HEAD -- <path>`) — a changed file is worth re-surfacing.
+6. **Skip-memory:** on skip, record it in a skip ledger so the next run doesn't re-nag — `$CLAUDE_PROJECT_DIR/.claude/conventions/.align-skips.md`, one line per skip: `- <path> · <convention name> · <short-sha>`. On later runs, suppress a skipped violation **unless the file changed since that sha** (`git diff --quiet <sha> HEAD -- <path>`) — a changed file is worth re-surfacing.
 7. After an approved fix, **offer to apply the same fix to all similar files** in scope (same violation of the same convention), as one batch.
 
 **Commit:** **one commit per convention**, spanning every file that convention touched — e.g. `Apply Either-return convention across 6 services`. Not per-file (noise), not one bulk commit (unrevertable blob). Always approval-gated: show diff summary + proposed message, then approve / edit message / skip; offer to bundle the rest into one commit for anyone who doesn't want per-convention gates. Refresh commit(s) land first, then the per-convention code commits.

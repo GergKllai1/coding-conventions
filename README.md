@@ -86,11 +86,11 @@ All commands are **manual and opt-in** — nothing scans or commits on its own.
 - **`/refresh`** — maintain the catalog *itself*: re-anchor exemplars that have moved, repoint ones
   that were renamed or deleted, merge duplicates, drop dead entries. Reviews the conventions, never
   your code. Cheap; commits the whole tidy-up as one change.
-- **`/check`** — enforce the catalog on your *code*: find violations (whoever wrote them), propose
-  fixes, and apply them across similar files. **Diff-scoped by default** (only what changed); pass
-  `--all` for a full-repo sweep. Runs `/refresh` first so it never enforces stale rules, leans on
-  your existing linter for mechanical rules, remembers what you skip, and commits **one change per
-  convention** — each one approval-gated.
+- **`/align`** — bring your *code* into line with the catalog: find violations (whoever wrote them),
+  propose fixes, and apply them across similar files (**it changes code**). **Diff-scoped by default**
+  (only what changed); pass `--all` for a full-repo sweep. Runs `/refresh` first so it never enforces
+  stale rules, leans on your existing linter for mechanical rules, remembers what you skip, and
+  commits **one change per convention** — each one approval-gated.
 
 ## Where your conventions live
 
@@ -105,7 +105,7 @@ Built for [Claude Code](https://code.claude.com) — my preferred agent — but 
 project conventions are just plain markdown in `.claude/conventions/*.md`, so any agent that reads an
 instructions file (Codex, Cursor, Copilot, Aider, Windsurf, … via `AGENTS.md`) can follow them —
 point its instructions file at that directory. What's Claude-specific is the *automation*: proactive
-capture, the batched review, and the `/seed` · `/refresh` · `/check` commands. Those don't run in
+capture, the batched review, and the `/seed` · `/refresh` · `/align` commands. Those don't run in
 other agents, but the catalog they produce is portable and readable anywhere.
 
 ## License
